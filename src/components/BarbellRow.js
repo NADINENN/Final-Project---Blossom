@@ -1,0 +1,308 @@
+import React, { useState, useEffect, useContext } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom'; 
+import { AuthenticationContext } from '../Authentication'; 
+import './BarbellRow.css';
+
+function BarbellRow() {
+    const [sets, setSets] = useState('');
+    const [reps, setReps] = useState('');
+    const [weight, setWeight] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
+    const [savedData, setSavedData] = useState([]);
+    const [suggestionMessage, setSuggestionMessage] = useState('');
+    const { loggedInUser } = useContext(AuthenticationContext);
+    const [userLevel, setUserLevel] = useState(1); 
+    const [levelUpMessage, setLevelUpMessage] = useState(''); 
+    const navigate = useNavigate();
+    const location = useLocation(); 
+
+    // Fetch recent BarbellRow sessions and user level
+    useEffect(() => {
+        if (loggedInUser) {
+            fetch(`http://localhost:5000/api/exercises/get-recent-sessions?username=${loggedInUser}&exerciseType=barbellrow`)
+                .then((response) => response.json())
+                .then((data) => {
+                    setSavedData(data);
+                    checkForSuggestions(data);
+                })
+                .catch((error) => console.error('Error fetching sessions:', error));
+
+            fetch(`http://localhost:5000/api/progress/get-user-progress?username=${loggedInUser}`)
+                .then((response) => response.json())
+                .then((data) => {
+                    setUserLevel(data.level);
+                })
+                .catch((error) => console.error('Error fetching user level:', error));
+        }
+    }, [loggedInUser]);
+
+    // Handle saving a BarbellRow session
+    const handleSave = () => {
+        if (sets === '' || reps === '' || weight === '') {
+            setErrorMessage('Please fill out all fields before saving.');
+            return;
+        }
+
+        if (parseInt(weight) < 0 || parseInt(sets) <= 0 || parseInt(reps) <= 0) {
+            setErrorMessage('Weight can be zero, but sets and reps must be greater than zero.');
+            return;
+        }
+
+        const currentDate = new Date().toISOString(); 
+        const newEntry = {
+            username: loggedInUser,
+            exerciseType: 'barbellrow',
+            sets: parseInt(sets),  
+            reps: parseInt(reps),
+            weight: parseInt(weight),
+            date: currentDate, 
+        };
+
+        fetch('http://localhost:5000/api/exercises/save-session', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(newEntry),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                const updatedData = [{ ...newEntry, date: currentDate }, ...savedData.slice(0, 4)];
+                setSavedData(updatedData);
+                checkForSuggestions(updatedData); 
+                setErrorMessage('');
+                setSets('');
+                setReps('');
+                setWeight('');
+
+                if (data.levelUp) {
+                    setUserLevel(data.newLevel);
+                    setLevelUpMessage(
+                        `Congratulations! You've reached Level ${data.newLevel} by consistently improving your sets and weights! Keep it up!`
+                    );
+                } else {
+                    setLevelUpMessage('');
+                }
+
+            })
+            .catch((error) => {
+                console.error('Error saving session:', error);
+                setErrorMessage('An error occurred while saving the session.');
+            });
+    };
+
+    // Handle deleting a session
+    const handleDelete = (id) => {
+        fetch(`http://localhost:5000/api/exercises/delete-session/${id}`, {
+            method: 'DELETE',
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.message === 'Session deleted successfully') {
+                    fetch(`http://localhost:5000/api/exercises/get-recent-sessions?username=${loggedInUser}&exerciseType=barbellrow`)
+                        .then((response) => response.json())
+                        .then((data) => {
+                            setSavedData(data);
+                            checkForSuggestions(data); 
+                        })
+                        .catch((error) => console.error('Error fetching sessions:', error));
+                } else {
+                    setErrorMessage(data.message);
+                }
+            })
+            .catch((error) => {
+                console.error('Error deleting session:', error);
+                setErrorMessage('An error occurred while deleting the session.');
+            });
+    };
+
+    // Handle navigation
+    const handleNavigation = (path) => {
+        navigate(path);
+    };
+
+    // Check conditions and set suggestions
+    const checkForSuggestions = (data) => {
+        if (parseInt(weight) === 0) {
+            setSuggestionMessage('');
+            return;
+        }
+
+        if (parseInt(sets) > 5) {
+            setSuggestionMessage(randomMessage([
+                "Consider increasing the weight since you are doing more than 5 sets.",
+                "You seem strong enough to try a higher weight because you are doing more than 5 sets.",
+                "It's impressive you can handle over 5 sets! Try increasing the weight for more gains.",
+                "Your endurance is great! Consider increasing the weight since you are managing more than 5 sets.",
+                "Doing more than 5 sets? You might be ready for a heavier weight!"
+            ]));
+        } else if (parseInt(sets) === 1) {
+            setSuggestionMessage(randomMessage([
+                "Great job working out today. Consider trying a lower weight next time and instead increasing your number of sets.",
+                "Every workout counts. To make it easier on yourself, it might be best to drop the weight and instead focus on being able to do 3 sets.",
+                "It is suggested to try to achieve 3 to 5 sets for each weight you lift. It might be more beneficial to attempt this BarbellRow with a lower weight next time.",
+                "It is great you strive to increase your maximum weight but being patient and increasing weight slowly will yield better long term results. So it could be useful to drop the weight until you can safely do 3 sets and only then to increase the weight.",
+                "Keep up the effort! For a more balanced workout, try reducing the weight and increasing the sets."
+            ]));
+        } else if (checkSameWeightAndSets(data)) {
+            setSuggestionMessage(randomMessage([
+                "You have been using the same weight for 3 sessions. Consider increasing the weight.",
+                "To maximize your gains, try increasing the weight after maintaining the same weight for 3 sessions.",
+                "It seems like you are ready to challenge yourself more. Consider adding some weight to your BarbellRow.",
+                "Consistency is key! Now try to increase your weight for further improvement.",
+                "Great job being consistent! It might be time to challenge yourself with more weight."
+            ]));
+        } else {
+            setSuggestionMessage('');
+        }
+    };
+
+    const randomMessage = (messages) => {
+        return messages[Math.floor(Math.random() * messages.length)];
+    };
+
+    const checkSameWeightAndSets = (data) => {
+        const recentSessions = data.slice(0, 3);
+        if (recentSessions.length < 3) return false;
+
+        return recentSessions.every(session => session.weight === parseInt(weight) && session.sets >= 3);
+    };
+
+    useEffect(() => {
+        console.log("Updated Suggestion Message:", suggestionMessage);
+    }, [suggestionMessage]);
+
+    const exercises = [
+        { path: '/squat', icon: 'squat-icon.png', label: 'Squats' },
+        { path: '/deadlifts', icon: 'deadlift-icon.png', label: 'Deadlifts' },
+        { path: '/BarbellRow', icon: 'barbell-icon.png', label: 'Barbell Row' },
+        { path: '/ModifiedBench', icon: 'benchpress-icon.png', label: 'Modified Benchpress' },
+        { path: '/ModifiedOverheadPress', icon: 'overhead-icon.png', label: 'Modified Overhead Press' },
+        { path: '/Stats', icon: 'stats-icon.png', label: 'Stats' }
+    ];
+
+    return (
+        <div className="barbellrow-container">
+            {/* Centered icon grid at the top */}
+            <div className="barbellrow-icon-grid">
+                {exercises.map(({ path, icon, label }) => (
+                    <div key={path} className="barbellrow-icon-container">
+                        <div
+                            className={`barbellrow-icon-square ${location.pathname === path ? 'active' : ''}`}
+                            onClick={() => handleNavigation(path)}
+                        >
+                            <img src={`${process.env.PUBLIC_URL}/${icon}`} alt={`${label} Icon`} />
+                            <span className="barbellrow-icon-label">{label}</span>
+                        </div>
+                    </div>
+                ))}
+            </div>
+    
+            {/* Title */}
+            <h1 className="barbellrow-title">BARBELL ROW</h1>
+    
+            {/* Level-up message */}
+            {levelUpMessage && (
+                <div className="barbellrow-level-up-message">
+                    <p>{levelUpMessage}</p>
+                </div>
+            )}
+    
+            {/* Description of exercise */}
+            <div className="barbellrow-description">
+                <p>
+                    Barbell Rows are essential for building strength in your back, legs, and core. It is important to maintain a neutrral spine and to Bend
+                    from the hips and not the lower back.
+                    
+                </p>
+                <h3 style={{ textDecoration: "underline" }}>Starting out</h3>
+                <p>
+                    Begin with light weights or resisance bands to practice form. Once comfortable with the movement, gradually increase the weight.
+                </p>
+                <h3 style={{ textDecoration: "underline" }}>Modifications</h3>
+                <p>The barbell row can be easily performed with a bench to ensure there is not too much pressure on the abdominal core.</p>
+                <p>Incline your bench and place your chest against the bench. The feet are on the ground.</p>
+                <p>Grab the barbell and keep your hands slightly wider than shoulder-width.</p>
+                <p>Exhale as you pull the barbell toward your lower chest or upper abdomen.</p>
+                <p>Inhale and slowly lower the barbell back to the starting position.</p>
+
+
+            </div>
+
+
+
+            <div className="barbellrow-content-container">
+                {/* DO NOT Section */}
+                <div className="barbellrow-text-container">
+                    <h2 className="barbellrow-do-not-title">Do Not</h2>
+                    <p className="barbellrow-text-red">Round your back</p>
+                    <p className="barbellrow-text-red">Do not lift with your backs</p>
+                    <p className="barbellrow-text-red">Lock your elbows when lowering the weights</p>
+                    
+
+                </div>
+    
+                {/* Form to log exercise session */}
+                <div className="barbellrow-form-and-description">
+                    <div className="barbellrow-form-container">
+                        <input
+                            type="number"
+                            className="barbellrow-input"
+                            placeholder="Sets"
+                            value={sets}
+                            onChange={(e) => setSets(e.target.value)}
+                        />
+                        <input
+                            type="number"
+                            className="barbellrow-input"
+                            placeholder="Reps"
+                            value={reps}
+                            onChange={(e) => setReps(e.target.value)}
+                        />
+                        <input
+                            type="number"
+                            className="barbellrow-input"
+                            placeholder="Weight"
+                            value={weight}
+                            onChange={(e) => setWeight(e.target.value)}
+                            min="0" 
+                        />
+                        <button className="barbellrow-save-button" onClick={handleSave}>
+                            Save
+                        </button>
+    
+                        {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
+                        {suggestionMessage && <p className="barbellrow-suggestion-message">{suggestionMessage}</p>}
+                    </div>
+                </div>
+    
+                {/* DO Section */}
+                <div className="barbellrow-text-container">
+                    <h2 className="barbellrow-do-title">DO</h2>
+                    <p className="barbellrow-text-green">Engage your core</p>
+                    <p className="barbellrow-text-green">Bend the knees slightly</p>
+                    <p className="barbellrow-text-green">Bend from the hips</p>
+                    <p className="barbellrow-text-green">Keep your elbows close to your sides</p>
+                </div>
+            </div>
+    
+            {/* Show last 5 sessions */}
+            <div className="barbellrow-recent-sessions-container">
+                <h2 className="barbellrow-recent-sessions-title">Recent Sessions</h2>
+                <div className="barbellrow-saved-data">
+                    {savedData.map((data, index) => (
+                        <div key={index} className="barbellrow-saved-data-item">
+                            <strong className="barbellrow-record-bold">Date:</strong> {new Date(data.date).toLocaleDateString()} &nbsp;
+                            <strong className="barbellrow-record-bold">Sets:</strong> {data.sets}, 
+                            <strong className="barbellrow-record-bold"> Reps:</strong> {data.reps}, 
+                            <strong className="barbellrow-record-bold"> Weight:</strong> {data.weight}
+                            <button className="barbellrow-delete-button" onClick={() => handleDelete(data.id)}>&minus;</button>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </div>
+    );
+}
+
+export default BarbellRow;

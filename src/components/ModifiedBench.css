@@ -1,0 +1,284 @@
+.modifiedBench-icon-grid {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 15px 0;
+}
+
+.modifiedBench-icon-container {
+    width: 100px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 1px;
+}
+
+.modifiedBench-icon-square {
+    width: 60px;
+    height: 60px;
+    background-color: rgba(190, 191, 251, 0.8); 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    transition: transform 0.2s, background-color 0.3s ease;
+    cursor: pointer;
+    position: relative;
+}
+
+.modifiedBench-icon-square.active {
+    transform: scale(1.5);
+}
+
+.modifiedBench-icon-square img {
+    width: 30px;
+    height: auto;
+}
+
+.modifiedBench-icon-square:hover {
+    background-color: #bebffb;
+}
+
+.modifiedBench-icon-label {
+    display: none;
+    position: absolute;
+    top: 110%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    padding: 5px;
+    border-radius: 5px;
+    white-space: nowrap;
+    font-size: 12px;
+    pointer-events: none;
+}
+
+.modifiedBench-icon-square:hover .modifiedBench-icon-label {
+    display: block;
+}
+
+.modifiedBench-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    background-color: var(--app-background-color);
+    padding: 20px;
+    width: 100%;
+    margin-top: 20px; 
+}
+
+.modifiedBench-content-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    background-color: var(--app-background-color);
+    margin-top: 20px; 
+}
+
+.modifiedBench-image-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+    padding: 20px;
+}
+
+.modifiedBench-image-container img {
+    max-width: 300px;
+    height: auto;
+    display: block;
+    margin-bottom: 20px;
+    background-color: white;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.modifiedBench-boxes-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background-color: var(--app-background-color);
+}
+
+.modifiedBench-form-container {
+    margin-top: 20px;
+    width: 100%;
+    max-width: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--app-background-color);
+}
+
+.modifiedBench-input {
+    width: 150px;
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.modifiedBench-save-button {
+    width: 170px; 
+    padding: 10px 20px;
+    margin: 5px 0;
+    background-color: #2e004d;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.modifiedBench-save-button:hover {
+    background-color: #25003a;
+}
+
+.modifiedBench-delete-button {
+    background-color: var(--app-background-color); 
+    color: red; 
+    border: 2.5px solid red; 
+    border-radius: 50%;
+    cursor: pointer;
+    width: 18px;
+    height: 18px; 
+    display: inline-flex; 
+    justify-content: center;
+    align-items: center;
+    font-size: 15px; 
+    font-weight: 900; 
+    line-height: 2; 
+    padding: 0; 
+    margin-left: 8px; 
+    vertical-align: middle;
+    text-align: center;
+    box-sizing: border-box;
+    margin-top: -2px;
+}
+
+.modifiedBench-delete-button:hover {
+    background-color: #f8d7da; 
+}
+
+.modifiedBench-saved-data {
+    margin-top: 20px;
+    width: 100%;
+    max-width: 600px;
+    text-align: left;
+}
+
+.modifiedBench-saved-data-item {
+    border-bottom: 1px solid #ccc;
+    padding: 10px 0;
+    margin: 10px 0; 
+}
+
+.modifiedBench-record-bold {
+    color: #2e004d; 
+    font-weight: bold;
+}
+
+.modifiedBench-text-green {
+    color: green;
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.modifiedBench-text-red {
+    color: red;
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.modifiedBench-do-title {
+    color: green;
+    font-size: 18px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.modifiedBench-do-not-title {
+    color: red;
+    font-size: 18px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.modifiedBench-text-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 13%;
+    margin-right: 20px;
+    margin-bottom: 90px;
+    padding: 10px;
+}
+
+.modifiedBench-form-and-description {
+    margin-right: 60px;
+    margin-left: 40px;
+    padding: 10px;
+}
+
+.modifiedBench-title {
+    font-size: 36px;
+    color: #2e004d;
+    text-align: center;
+    margin-top: 20px; 
+    margin-bottom: 20px; 
+    font-weight: bold;
+}
+
+.modifiedBench-description {
+    margin-top: 10px; 
+    margin-bottom: 20px;
+    color: #2e004d;
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 1.5;
+    max-width: 800px;
+    width: 90%;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.modifiedBench-recent-sessions-container {
+    max-width: 600px; 
+    margin: 20px auto; 
+    text-align: left; 
+    padding: 20px; 
+}
+
+.modifiedBench-recent-sessions-title {
+    font-size: 24px; 
+    color: #2e004d; 
+    text-align: left; 
+    margin-top: 10px; 
+    margin-bottom: 10px; 
+    font-weight: bold;
+}
+
+.suggestion-message {
+    color: blue;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.level-up-message {
+    background-color: #e0ffe0; 
+    color: #2e8b57; 
+    padding: 15px; 
+    border-radius: 10px; 
+    font-weight: bold;
+    text-align: center; 
+    margin: 20px 0; 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+    max-width: 600px; 
+    margin-left: auto;  
+    margin-right: auto; 
+}

@@ -1,0 +1,202 @@
+/* Stats.css */
+
+.stats-container {
+    padding: 20px;
+    text-align: center;
+}
+
+.exercise-icon-grid {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 15px 0;
+}
+
+.exercise-icon-container {
+    width: 100px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 1px;
+    margin-top: 20px; 
+}
+
+.exercise-icon-square {
+    width: 60px;
+    height: 60px;
+    background-color: rgba(190, 191, 251, 0.8); 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    transition: transform 0.2s, background-color 0.3s ease;
+    cursor: pointer;
+    position: relative;
+}
+
+.exercise-icon-square.active {
+    transform: scale(1.5);
+}
+
+.exercise-icon-square img {
+    width: 30px;
+    height: auto;
+}
+
+.exercise-icon-square:hover {
+    background-color: #bebffb;
+}
+
+.exercise-icon-label {
+    display: none;
+    position: absolute;
+    top: 110%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    padding: 5px;
+    border-radius: 5px;
+    white-space: nowrap;
+    font-size: 12px;
+    pointer-events: none;
+}
+
+.exercise-icon-square:hover .exercise-icon-label {
+    display: block;
+}
+
+.exercise-title {
+    font-size: 36px;
+    color: #2e004d;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+.exercise-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 50px;
+    width: 100%;
+}
+
+.exercise-section {
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.exercise-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.exercise-table th, .exercise-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+.exercise-table th {
+    background-color: #f2f2f2;
+}
+
+.toggle-view-button {
+    background-color: #bebffb;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.toggle-view-button:hover {
+    background-color: #a3a4f8;
+}
+
+.filter-options {
+    margin-bottom: 10px;
+}
+
+.exercise-save-button {
+    padding: 8px 12px;
+    background-color: #2e004d; /* Dark purple */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.exercise-save-button:hover {
+    background-color: #25003a;
+}
+
+.exercise-delete-button {
+    background-color: var(--app-background-color); 
+    color: red;
+    border: 2.5px solid red;
+    border-radius: 50%;
+    cursor: pointer;
+    width: 18px;
+    height: 18px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 15px;
+    font-weight: 900;
+    line-height: 1;
+    padding: 0;
+    margin-left: 8px;
+    vertical-align: middle;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.exercise-delete-button:hover {
+    background-color: #f8d7da;
+}
+
+.leaderboard-section {
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    text-align: center;
+    margin-top: 20px;
+    width: 100%; 
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1); 
+}
+
+
+.leaderboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: #fff; 
+    border-radius: 5px; 
+}
+
+.leaderboard-table th, .leaderboard-table td {
+    border: 1px solid #ddd;
+    padding: 10px; 
+    text-align: center;
+}
+
+.leaderboard-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.current-level {
+    font-size: 16px;
+    color: #bebffb;
+    font-family: 'Lato', sans-serif; 
+    margin-bottom: 15px;
+}
+
+

@@ -1,0 +1,39 @@
+/* src/components/Home.css */
+.home-container {
+    text-align: center;
+    padding: 40px;
+    
+}
+
+.home-exercise-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 250px); 
+    row-gap: 60px; 
+    column-gap: 60px; 
+    justify-content: center; 
+    justify-items: center;
+}
+
+.home-exercise-box {
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    padding: 20px;
+    width: 230px;
+    height: 230px;
+    background-color: rgba(190, 191, 251, 0.6); 
+    font-family: 'Merriweather', sans-serif;
+    text-align: center;
+    text-decoration: none;
+    color: #f8f5f5;
+    font-weight: bold;
+    font-size: 35px;
+
+    border-radius: 25px;
+    transition: background-color 0.3s ease;
+}
+
+.exercise-box:hover {
+    background-color: #bebffb;
+    color: rgba(0, 0, 0, 0.514);
+}
